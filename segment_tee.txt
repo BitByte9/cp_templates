@@ -1,0 +1,59 @@
+  vector<int> tin(n + 1), tout(n + 1), flatten(n + 1);
+    int timer = 0;
+
+    // Inline DFS
+    function<void(int,int)> dfs = [&](int node, int parent) {
+        timer++;
+        tin[node] = timer;
+        flatten[timer] = node;
+
+        for (auto child : adj[node]) {
+            if (child != parent) dfs(child, node);
+        }
+        tout[node] = timer;
+    };
+
+    dfs(1, 0);
+
+    vector<long long> tree(4 * n + 5);
+
+    // Inline build_tree
+    function<long long(int,int,int)> build_tree = [&](int s, int e, int treenode) {
+        if (s == e) {
+            tree[treenode] = values[ flatten[s] ];
+            return tree[treenode];
+        }
+        int mid = (s + e) / 2;
+        tree[treenode] = build_tree(s, mid, treenode * 2) +
+                         build_tree(mid + 1, e, treenode * 2 + 1);
+        return tree[treenode];
+    };
+
+    build_tree(1, n, 1);
+
+      // Inline query_tree
+    function<long long(int,int,int,int,int)> query_tree = [&](int s, int e, int qs, int qe, int treenode) {
+        if (s > qe || e < qs) return 0LL;
+        if (s >= qs && e <= qe) return tree[treenode];
+        int mid = (s + e) / 2;
+        return query_tree(s, mid, qs, qe, treenode * 2) +
+               query_tree(mid + 1, e, qs, qe, treenode * 2 + 1);
+    };
+//update inline function
+    function<void(int,int,int,int,long long)> update_tree = 
+[&](int s, int e, int idx, long long new_val, int treenode) {
+    if (s == e) {
+        tree[treenode] = new_val
+        return;
+    }
+
+    int mid = (s + e) / 2;
+
+    if (idx <= mid)
+        update_tree(s, mid, idx, new_val, treenode * 2);
+    else
+        update_tree(mid + 1, e, idx, new_val, treenode * 2 + 1);
+
+    // Recalculate current node
+    tree[treenode] = tree[treenode * 2] + tree[treenode * 2 + 1];
+};
