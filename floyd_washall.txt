@@ -1,0 +1,34 @@
+//  main template 
+void floydWarshall(vector<vector<int>>& dist)
+{
+    int n = dist.size();
+
+    for(int k = 0; k < n; k++)
+    {
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                if(dist[i][k] == 1e9 ||
+                   dist[k][j] == 1e9)
+                    continue;
+
+                dist[i][j] = min(
+                    dist[i][j],
+                    dist[i][k] + dist[k][j]
+                );
+            }
+        }
+    }
+}
+
+//base case
+vector<vector<int>> dist(V,
+                         vector<int>(V,1e9));
+for(int i=0;i<V;i++)
+    dist[i][i]=0;
+
+dist[u][v]=wt;
+
+//negative cycles
+//check all dist if dist[i][j]<0 negative cycle exist
