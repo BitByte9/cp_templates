@@ -1,0 +1,52 @@
+//Bellman-Ford Algorithm
+//Finds the shortest paths from one starting point to all other points. Works even when there are negative edge weights and can detect negative cycles (unlike Dijkstra).
+//Where Dijkstra Fails: When there are negative edges or a negative cycle because it may loop forever or give incorrect results.
+//Negative Cycle: A cycle where the total path weight is negative, causing the distance to decrease endlessly.
+//Why Bellman-Ford? It works with negative edges and can detect negative cycles. For undirected graphs, treat each edge as two directed edges.
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+
+    int V, E;
+    cin >> V >> E;
+
+    vector<vector<int>> edges;
+
+    for(int i = 0; i < E; i++) {
+
+        int u, v, wt;
+        cin >> u >> v >> wt;
+
+        edges.push_back({u, v, wt});
+    }
+
+    int src;
+    cin >> src;
+
+    vector<int> dist(V, 1e8);
+    dist[src] = 0;
+
+    for(int i = 1; i <= V - 1; i++) {
+
+        for(auto it : edges) {
+
+            int u = it[0];
+            int v = it[1];
+            int wt = it[2];
+
+            if(dist[u] != 1e8 &&
+               dist[u] + wt < dist[v]) {
+
+                dist[v] = dist[u] + wt;
+            }
+        }
+    }
+
+    for(int i = 0; i < V; i++)
+        cout << dist[i] << " ";
+
+    return 0;
+}
