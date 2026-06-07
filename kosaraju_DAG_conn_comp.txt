@@ -1,0 +1,88 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> vis;
+stack<int> st;
+
+void dfs1(int node, vector<vector<int>> &adj)
+{
+    vis[node] = 1;
+
+    for(auto child : adj[node])
+    {
+        if(!vis[child])
+            dfs1(child, adj);
+    }
+
+    st.push(node);
+}
+
+void dfs2(int node, vector<vector<int>> &revAdj, vector<int> &component)
+{
+    vis[node] = 1;
+    component.push_back(node);
+
+    for(auto child : revAdj[node])
+    {
+        if(!vis[child])
+            dfs2(child, revAdj, component);
+    }
+}
+
+int main()
+{
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<int>> adj(n);
+    vector<vector<int>> revAdj(n);
+
+    for(int i = 0; i < m; i++)
+    {
+        int u, v;
+        cin >> u >> v;
+
+        adj[u].push_back(v);
+        revAdj[v].push_back(u); // reverse edge
+    }
+
+    vis.assign(n, 0);
+
+    // Step 1: DFS and store finishing order
+    for(int i = 0; i < n; i++)
+    {
+        if(!vis[i])
+            dfs1(i, adj);
+    }
+
+    // Step 2: DFS on reversed graph
+    vis.assign(n, 0);
+
+    vector<vector<int>> SCCs;
+
+    while(!st.empty())
+    {
+        int node = st.top();
+        st.pop();
+
+        if(!vis[node])
+        {
+            vector<int> component;
+
+            dfs2(node, revAdj, component);
+
+            SCCs.push_back(component);
+        }
+    }
+
+    // Print SCCs
+    for(auto &comp : SCCs)
+    {
+        for(auto node : comp)
+            cout << node << " ";
+
+        cout << "\n";
+    }
+
+    return 0;
+}

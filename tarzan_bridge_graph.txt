@@ -4,12 +4,13 @@ using namespace std;
 vector<int> tin, low, vis;
 vector<pair<int,int>> bridges;
 int timer;
+//for atriculation points remove the //
 
 void dfs(int node, int parent, vector<vector<int>> &adj)
 {
     vis[node] = 1;
     tin[node] = low[node] = timer++;
-
+    //ll cnild_cnt=0;
     for(auto child : adj[node])
     {
         if(child == parent)
@@ -21,6 +22,7 @@ void dfs(int node, int parent, vector<vector<int>> &adj)
         }
         else // Tree Edge
         {
+        //child_cnt++;
             dfs(child, node, adj);
 
             low[node] = min(low[node], low[child]);
@@ -31,6 +33,8 @@ void dfs(int node, int parent, vector<vector<int>> &adj)
             }
         }
     }
+   // if(parent==-1 && child_cnt>=0)
+    //points.push_back(node);
 }
 
 int main()
